@@ -1,7 +1,7 @@
 package main
 
 import (
-	account "github.com/rdstihz/SimpleAccountBook/kitex_gen/account/account"
+	account "github.com/rdstihz/SimpleAccountBook/kitex_gen/account/accountservice"
 	"log"
 )
 

@@ -113,7 +113,7 @@ message GetBillByAccountIDResponse {
   BaseResp base_resp = 2;
 }
 
-service account{
+service AccountService{
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {}
   rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse) {}
   rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse) {}
