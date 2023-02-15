@@ -11,6 +11,9 @@ const (
 	ParamErrCode               = 10002
 	UserAlreadyExistErrCode    = 10003
 	AuthorizationFailedErrCode = 10004
+	UserNotFound               = 10005
+	AccountNotFound            = 10006
+	BillNotFount               = 10007
 )
 
 type ErrNo struct {
@@ -37,6 +40,9 @@ var (
 	ParamErr               = NewErrNo(ParamErrCode, "Wrong Parameters has benn giver")
 	UserAlreadyExistErr    = NewErrNo(UserAlreadyExistErrCode, "User already exists")
 	AuthorizationFailedErr = NewErrNo(AuthorizationFailedErrCode, "Authorization failed")
+	UserNotFoundErr        = NewErrNo(UserNotFound, "No matching users found")
+	AccountNotFoundErr     = NewErrNo(AccountNotFound, "No matching accounts found")
+	BillNotFoundErr        = NewErrNo(BillNotFount, "No matching bills found")
 )
 
 func ConvertErr(err error) ErrNo {

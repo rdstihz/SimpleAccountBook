@@ -218,7 +218,7 @@ func (x *CreateAccountRequest) fastReadField2(buf []byte, _type int8) (offset in
 }
 
 func (x *CreateAccountRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.Balance, offset, err = fastpb.ReadString(buf, _type)
+	x.Balance, offset, err = fastpb.ReadDouble(buf, _type)
 	return offset, err
 }
 
@@ -1011,10 +1011,10 @@ func (x *CreateAccountRequest) fastWriteField2(buf []byte) (offset int) {
 }
 
 func (x *CreateAccountRequest) fastWriteField3(buf []byte) (offset int) {
-	if x.Balance == "" {
+	if x.Balance == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Balance)
+	offset += fastpb.WriteDouble(buf[offset:], 3, x.Balance)
 	return offset
 }
 
@@ -1550,10 +1550,10 @@ func (x *CreateAccountRequest) sizeField2() (n int) {
 }
 
 func (x *CreateAccountRequest) sizeField3() (n int) {
-	if x.Balance == "" {
+	if x.Balance == 0 {
 		return n
 	}
-	n += fastpb.SizeString(3, x.Balance)
+	n += fastpb.SizeDouble(3, x.Balance)
 	return n
 }
 

@@ -6,13 +6,12 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/hertz-contrib/jwt"
+	"github.com/rdstihz/SimpleAccountBook/cmd/api/hanlder"
 	"github.com/rdstihz/SimpleAccountBook/cmd/api/rpc"
-	accountapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/account"
 	userapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/user"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -34,24 +33,22 @@ func main() {
 
 		//用户登录, 登录成功返回用户id
 		Authenticator: func(ctx context.Context, c *app.RequestContext) (interface{}, error) {
-			type UserParams struct {
-				Username string `json:"username"`
-				Password string `json:"password"`
-			}
-			var userParams UserParams
-			err := c.Bind(&userParams)
+			// 获取传入的username和password
+			var loginValues handler.UserParam
+			err := c.Bind(&loginValues)
 			if err != nil {
 				return int64(0), jwt.ErrMissingLoginValues
 			}
-			log.Println(userParams)
-			username := userParams.Username
-			password := userParams.Password
-
-			if username == "admin" && password == "12345" {
-				return int64(1), nil
-			} else {
-				return int64(0), jwt.ErrFailedAuthentication
+			username := loginValues.Username
+			password := loginValues.Password
+			if len(username) == 0 || len(password) == 0 {
+				return int64(0), jwt.ErrMissingLoginValues
 			}
+			// 调用rpc验证登录，获取user id
+			return rpc.CheckUser(&userapi.CheckUserRequest{
+				Username: username,
+				Password: password,
+			})
 		},
 
 		//向jwt token payload中写入用户id
@@ -109,88 +106,38 @@ func main() {
 	//刷新jwt token
 	user.POST("refresh/", authMiddleware.RefreshHandler)
 	//用户注册
-	user.POST("register/", func(ctx context.Context, c *app.RequestContext) {
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"status_code": 0,
-			"status_msg":  "register succeed",
-		})
-	})
+	user.POST("register/", handler.RegisterHandler)
 
 	user.Use(authMiddleware.MiddlewareFunc())
 	//获取用户信息
-	user.GET("/", func(ctx context.Context, c *app.RequestContext) {
-		//从jwt token payload中获取用户id
-		claims := jwt.ExtractClaims(ctx, c)
-		userID := int64(claims[constants.IdentityKey].(float64))
-		if userID == 1 {
-			c.JSON(http.StatusOK, map[string]interface{}{
-				"status_code": 0,
-				"status_msg":  "string",
-				"user": &userapi.User{
-					UserId:   1,
-					Username: "admin",
-				},
-			})
-		} else {
-			c.JSON(http.StatusOK, map[string]interface{}{
-				"status_code": 1,
-				"status_msg":  "authorization failed",
-			})
-		}
-	})
+	user.GET("/", handler.GetUserInfoHandler)
 
 	//account相关api
 	account := h.Group("account/")
 	account.Use(authMiddleware.MiddlewareFunc())
 	//创建帐户
-	account.POST("/", func(ctx context.Context, c *app.RequestContext) {
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"status_code": 0,
-			"status_msg":  "create succeed",
-		})
-	})
+	account.POST("/", handler.CreateAccountHandler)
 	//删除帐户
-	account.DELETE(":account_id/", func(ctx context.Context, c *app.RequestContext) {
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"status_code": 0,
-			"status_msg":  "delete succeed",
-		})
-	})
+	account.DELETE(":account_id/", handler.DeleteAccountHandler)
 	//修改帐户
-	account.PUT(":account_id/", func(ctx context.Context, c *app.RequestContext) {
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"status_code": 0,
-			"status_msg":  "update succeed",
-		})
-	})
+	account.PUT(":account_id/", handler.UpdateAccountHandler)
 	//查询帐户
-	account.GET(":account_id/", func(ctx context.Context, c *app.RequestContext) {
-		accountID, _ := strconv.ParseInt(c.Param("account_id"), 10, 64)
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"status_code": 0,
-			"status_msg":  "string",
-			"account": accountapi.Account{
-				AccountId:   accountID,
-				AccountName: "account_name",
-				Balance:     0,
-			},
-		})
-	})
+	account.GET(":account_id/", handler.GetAccountInfoHandler)
 	//查询用户所有帐户
-	account.GET("list/:user_id/", func(ctx context.Context, c *app.RequestContext) {
-		userID, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"status_code": 0,
-			"status_msg":  "string",
-			"accounts": []*accountapi.Account{
-				{
-					AccountId:   userID,
-					AccountName: "account_name",
-					Balance:     0,
-				},
-			},
-		})
-	})
+	account.GET("list/", handler.ListAccountHandler)
 
+	//bill相关api
+	bill := h.Group("bill/")
+	bill.Use(authMiddleware.MiddlewareFunc())
+	//创建bill
+	bill.POST("/", handler.CreateBillHandler)
+	//删除bill
+	bill.DELETE(":bill_id/", handler.DeleteBillHandler)
+	//修改bill
+	bill.PUT(":bill_id/", handler.UpdateBillHandler)
+	//查询bill
+	bill.GET(":bill_id/", handler.GetBillInfoHandler)
+	//查询account下所有bill
+	bill.GET("list/", handler.ListBillHandler)
 	h.Spin()
 }
