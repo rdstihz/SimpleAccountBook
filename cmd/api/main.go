@@ -6,10 +6,12 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/hertz-contrib/jwt"
-	user_api "github.com/rdstihz/SimpleAccountBook/kitex_gen/user"
+	accountapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/account"
+	userapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/user"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -94,7 +96,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//用户
+	//用户相关api
 	user := h.Group("user/")
 	//用户登录
 	user.POST("login/", authMiddleware.LoginHandler)
@@ -118,7 +120,7 @@ func main() {
 			c.JSON(http.StatusOK, map[string]interface{}{
 				"status_code": 0,
 				"status_msg":  "string",
-				"user": &user_api.User{
+				"user": &userapi.User{
 					UserId:   1,
 					Username: "admin",
 				},
@@ -129,6 +131,59 @@ func main() {
 				"status_msg":  "authorization failed",
 			})
 		}
+	})
+
+	//account相关api
+	account := h.Group("account/")
+	account.Use(authMiddleware.MiddlewareFunc())
+	//创建帐户
+	account.POST("/", func(ctx context.Context, c *app.RequestContext) {
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"status_code": 0,
+			"status_msg":  "create succeed",
+		})
+	})
+	//删除帐户
+	account.DELETE(":account_id/", func(ctx context.Context, c *app.RequestContext) {
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"status_code": 0,
+			"status_msg":  "delete succeed",
+		})
+	})
+	//修改帐户
+	account.PUT(":account_id/", func(ctx context.Context, c *app.RequestContext) {
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"status_code": 0,
+			"status_msg":  "update succeed",
+		})
+	})
+	//查询帐户
+	account.GET(":account_id/", func(ctx context.Context, c *app.RequestContext) {
+		accountID, _ := strconv.ParseInt(c.Param("account_id"), 10, 64)
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"status_code": 0,
+			"status_msg":  "string",
+			"account": accountapi.Account{
+				AccountId:   accountID,
+				AccountName: "account_name",
+				Balance:     0,
+			},
+		})
+	})
+	//查询用户所有帐户
+	account.GET("list/:user_id/", func(ctx context.Context, c *app.RequestContext) {
+		userID, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"status_code": 0,
+			"status_msg":  "string",
+			"accounts": []*accountapi.Account{
+				{
+					AccountId:   userID,
+					AccountName: "account_name",
+					Balance:     0,
+				},
+			},
+		})
 	})
 
 	h.Spin()
