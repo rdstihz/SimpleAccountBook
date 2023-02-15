@@ -10,6 +10,7 @@ import (
 	"github.com/rdstihz/SimpleAccountBook/cmd/api/rpc"
 	userapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/user"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
+	"github.com/rdstihz/SimpleAccountBook/pkg/middleware"
 	"log"
 	"net/http"
 	"time"
@@ -98,7 +99,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	// 添加中间件，打印日志信息
+	h.Use(middleware.HertzCommonMiddleware())
 	//用户相关api
 	user := h.Group("user/")
 	//用户登录
