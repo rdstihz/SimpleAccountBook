@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"github.com/cloudwego/kitex/client"
 	accountapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/account"
 	"github.com/rdstihz/SimpleAccountBook/kitex_gen/account/accountservice"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
@@ -12,7 +13,10 @@ var accountClient accountservice.Client
 
 // 初始化account rpc 连接
 func initAccountRPC() {
-	c, err := accountservice.NewClient(constants.AccountServiceName)
+	c, err := accountservice.NewClient(
+		constants.AccountServiceName,
+		client.WithHostPorts("127.0.0.1:18882"),
+	)
 	if err != nil {
 		panic(err)
 	}

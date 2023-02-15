@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"github.com/cloudwego/kitex/client"
 	userapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/user"
 	"github.com/rdstihz/SimpleAccountBook/kitex_gen/user/userservice"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
@@ -12,7 +13,10 @@ var userClient userservice.Client
 
 // 初始化user rpc连接
 func initUserRPC() {
-	c, err := userservice.NewClient(constants.UserServiceName)
+	c, err := userservice.NewClient(
+		constants.UserServiceName,
+		client.WithHostPorts("127.0.0.1:18881"),
+	)
 	if err != nil {
 		panic(err)
 	}

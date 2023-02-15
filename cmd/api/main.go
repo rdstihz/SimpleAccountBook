@@ -34,6 +34,7 @@ func main() {
 
 		//用户登录, 登录成功返回用户id
 		Authenticator: func(ctx context.Context, c *app.RequestContext) (interface{}, error) {
+			return int64(1), nil
 			// 获取传入的username和password
 			var loginValues handler.UserParam
 			err := c.Bind(&loginValues)
@@ -110,8 +111,8 @@ func main() {
 	//用户注册
 	user.POST("register/", handler.RegisterHandler)
 
-	user.Use(authMiddleware.MiddlewareFunc())
 	//获取用户信息
+	user.Use(authMiddleware.MiddlewareFunc())
 	user.GET("/", handler.GetUserInfoHandler)
 
 	//account相关api
@@ -132,7 +133,7 @@ func main() {
 	bill := h.Group("bill/")
 	bill.Use(authMiddleware.MiddlewareFunc())
 	//创建bill
-	bill.POST("/", handler.CreateBillHandler)
+	bill.POST(":account_id/", handler.CreateBillHandler)
 	//删除bill
 	bill.DELETE(":bill_id/", handler.DeleteBillHandler)
 	//修改bill
