@@ -8,6 +8,7 @@ import (
 	"github.com/rdstihz/SimpleAccountBook/kitex_gen/user"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
 	"github.com/rdstihz/SimpleAccountBook/pkg/errno"
+	"log"
 )
 
 type UserParam struct {
@@ -48,7 +49,7 @@ func GetUserInfoHandler(ctx context.Context, c *app.RequestContext) {
 	//从jwt token payload中获取用户id
 	claims := jwt.ExtractClaims(ctx, c)
 	userID := int64(claims[constants.IdentityKey].(float64))
-
+	log.Println(userID)
 	//调用rpc查询用户信息
 	users, err := rpc.MGetUser(&user.MGetUserRequest{UserIds: []int64{userID}})
 	if err != nil {

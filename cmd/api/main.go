@@ -34,7 +34,7 @@ func main() {
 
 		//用户登录, 登录成功返回用户id
 		Authenticator: func(ctx context.Context, c *app.RequestContext) (interface{}, error) {
-			return int64(1), nil
+			//return int64(1), nil
 			// 获取传入的username和password
 			var loginValues handler.UserParam
 			err := c.Bind(&loginValues)
