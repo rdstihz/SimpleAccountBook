@@ -19,7 +19,7 @@ type Client interface {
 	CreateBill(ctx context.Context, Req *account.CreateBillRequest, callOptions ...callopt.Option) (r *account.CreateBillResponse, err error)
 	DeleteBill(ctx context.Context, Req *account.DeleteBillRequest, callOptions ...callopt.Option) (r *account.DeleteBillResponse, err error)
 	UpdateBill(ctx context.Context, Req *account.UpdateBillRequest, callOptions ...callopt.Option) (r *account.UpdateBillResponse, err error)
-	MGetGillRequest(ctx context.Context, Req *account.MGetBillRequest, callOptions ...callopt.Option) (r *account.MGetBillResponse, err error)
+	MGetBill(ctx context.Context, Req *account.MGetBillRequest, callOptions ...callopt.Option) (r *account.MGetBillResponse, err error)
 	GetBillByAccountID(ctx context.Context, Req *account.GetBillByAccountIDRequest, callOptions ...callopt.Option) (r *account.GetBillByAccountIDResponse, err error)
 }
 
@@ -92,9 +92,9 @@ func (p *kAccountServiceClient) UpdateBill(ctx context.Context, Req *account.Upd
 	return p.kClient.UpdateBill(ctx, Req)
 }
 
-func (p *kAccountServiceClient) MGetGillRequest(ctx context.Context, Req *account.MGetBillRequest, callOptions ...callopt.Option) (r *account.MGetBillResponse, err error) {
+func (p *kAccountServiceClient) MGetBill(ctx context.Context, Req *account.MGetBillRequest, callOptions ...callopt.Option) (r *account.MGetBillResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.MGetGillRequest(ctx, Req)
+	return p.kClient.MGetBill(ctx, Req)
 }
 
 func (p *kAccountServiceClient) GetBillByAccountID(ctx context.Context, Req *account.GetBillByAccountIDRequest, callOptions ...callopt.Option) (r *account.GetBillByAccountIDResponse, err error) {

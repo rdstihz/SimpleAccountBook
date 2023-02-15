@@ -6,6 +6,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/hertz-contrib/jwt"
+	"github.com/rdstihz/SimpleAccountBook/cmd/api/rpc"
 	accountapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/account"
 	userapi "github.com/rdstihz/SimpleAccountBook/kitex_gen/user"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
@@ -15,7 +16,12 @@ import (
 	"time"
 )
 
+func Init() {
+	rpc.Init()
+}
+
 func main() {
+	Init()
 	h := server.New(
 		server.WithHostPorts("0.0.0.0:8080"),
 		server.WithHandleMethodNotAllowed(true),

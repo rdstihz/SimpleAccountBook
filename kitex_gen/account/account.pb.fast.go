@@ -836,12 +836,12 @@ ReadFieldError:
 }
 
 func (x *GetBillByAccountIDResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	var v Account
+	var v Bill
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
 	}
-	x.Accounts = append(x.Accounts, &v)
+	x.Bills = append(x.Bills, &v)
 	return offset, nil
 }
 
@@ -1377,11 +1377,11 @@ func (x *GetBillByAccountIDResponse) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *GetBillByAccountIDResponse) fastWriteField1(buf []byte) (offset int) {
-	if x.Accounts == nil {
+	if x.Bills == nil {
 		return offset
 	}
-	for i := range x.Accounts {
-		offset += fastpb.WriteMessage(buf[offset:], 1, x.Accounts[i])
+	for i := range x.Bills {
+		offset += fastpb.WriteMessage(buf[offset:], 1, x.Bills[i])
 	}
 	return offset
 }
@@ -1916,11 +1916,11 @@ func (x *GetBillByAccountIDResponse) Size() (n int) {
 }
 
 func (x *GetBillByAccountIDResponse) sizeField1() (n int) {
-	if x.Accounts == nil {
+	if x.Bills == nil {
 		return n
 	}
-	for i := range x.Accounts {
-		n += fastpb.SizeMessage(1, x.Accounts[i])
+	for i := range x.Bills {
+		n += fastpb.SizeMessage(1, x.Bills[i])
 	}
 	return n
 }
@@ -2038,6 +2038,6 @@ var fieldIDToName_GetBillByAccountIDRequest = map[int32]string{
 }
 
 var fieldIDToName_GetBillByAccountIDResponse = map[int32]string{
-	1: "Accounts",
+	1: "Bills",
 	2: "BaseResp",
 }

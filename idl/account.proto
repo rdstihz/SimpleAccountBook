@@ -109,7 +109,7 @@ message GetBillByAccountIDRequest{
 }
 
 message GetBillByAccountIDResponse {
-  repeated Account accounts = 1;
+  repeated Bill bills = 1;
   BaseResp base_resp = 2;
 }
 
@@ -123,6 +123,6 @@ service AccountService{
   rpc CreateBill(CreateBillRequest) returns (CreateBillResponse) {}
   rpc DeleteBill(DeleteBillRequest) returns (DeleteBillResponse) {}
   rpc UpdateBill(UpdateBillRequest) returns (UpdateBillResponse) {}
-  rpc MGetGillRequest(MGetBillRequest) returns (MGetBillResponse) {}
+  rpc MGetBill(MGetBillRequest) returns (MGetBillResponse) {}
   rpc GetBillByAccountID(GetBillByAccountIDRequest) returns (GetBillByAccountIDResponse) {}
 }

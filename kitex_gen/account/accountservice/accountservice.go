@@ -30,7 +30,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"CreateBill":         kitex.NewMethodInfo(createBillHandler, newCreateBillArgs, newCreateBillResult, false),
 		"DeleteBill":         kitex.NewMethodInfo(deleteBillHandler, newDeleteBillArgs, newDeleteBillResult, false),
 		"UpdateBill":         kitex.NewMethodInfo(updateBillHandler, newUpdateBillArgs, newUpdateBillResult, false),
-		"MGetGillRequest":    kitex.NewMethodInfo(mGetGillRequestHandler, newMGetGillRequestArgs, newMGetGillRequestResult, false),
+		"MGetBill":           kitex.NewMethodInfo(mGetBillHandler, newMGetBillArgs, newMGetBillResult, false),
 		"GetBillByAccountID": kitex.NewMethodInfo(getBillByAccountIDHandler, newGetBillByAccountIDArgs, newGetBillByAccountIDResult, false),
 	}
 	extra := map[string]interface{}{
@@ -1207,7 +1207,7 @@ func (p *UpdateBillResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func mGetGillRequestHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+func mGetBillHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
@@ -1215,64 +1215,64 @@ func mGetGillRequestHandler(ctx context.Context, handler interface{}, arg, resul
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(account.AccountService).MGetGillRequest(ctx, req)
+		resp, err := handler.(account.AccountService).MGetBill(ctx, req)
 		if err != nil {
 			return err
 		}
 		if err := st.SendMsg(resp); err != nil {
 			return err
 		}
-	case *MGetGillRequestArgs:
-		success, err := handler.(account.AccountService).MGetGillRequest(ctx, s.Req)
+	case *MGetBillArgs:
+		success, err := handler.(account.AccountService).MGetBill(ctx, s.Req)
 		if err != nil {
 			return err
 		}
-		realResult := result.(*MGetGillRequestResult)
+		realResult := result.(*MGetBillResult)
 		realResult.Success = success
 	}
 	return nil
 }
-func newMGetGillRequestArgs() interface{} {
-	return &MGetGillRequestArgs{}
+func newMGetBillArgs() interface{} {
+	return &MGetBillArgs{}
 }
 
-func newMGetGillRequestResult() interface{} {
-	return &MGetGillRequestResult{}
+func newMGetBillResult() interface{} {
+	return &MGetBillResult{}
 }
 
-type MGetGillRequestArgs struct {
+type MGetBillArgs struct {
 	Req *account.MGetBillRequest
 }
 
-func (p *MGetGillRequestArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *MGetBillArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
 		p.Req = new(account.MGetBillRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
 
-func (p *MGetGillRequestArgs) FastWrite(buf []byte) (n int) {
+func (p *MGetBillArgs) FastWrite(buf []byte) (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.FastWrite(buf)
 }
 
-func (p *MGetGillRequestArgs) Size() (n int) {
+func (p *MGetBillArgs) Size() (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.Size()
 }
 
-func (p *MGetGillRequestArgs) Marshal(out []byte) ([]byte, error) {
+func (p *MGetBillArgs) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetReq() {
-		return out, fmt.Errorf("No req in MGetGillRequestArgs")
+		return out, fmt.Errorf("No req in MGetBillArgs")
 	}
 	return proto.Marshal(p.Req)
 }
 
-func (p *MGetGillRequestArgs) Unmarshal(in []byte) error {
+func (p *MGetBillArgs) Unmarshal(in []byte) error {
 	msg := new(account.MGetBillRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
@@ -1281,54 +1281,54 @@ func (p *MGetGillRequestArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var MGetGillRequestArgs_Req_DEFAULT *account.MGetBillRequest
+var MGetBillArgs_Req_DEFAULT *account.MGetBillRequest
 
-func (p *MGetGillRequestArgs) GetReq() *account.MGetBillRequest {
+func (p *MGetBillArgs) GetReq() *account.MGetBillRequest {
 	if !p.IsSetReq() {
-		return MGetGillRequestArgs_Req_DEFAULT
+		return MGetBillArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-func (p *MGetGillRequestArgs) IsSetReq() bool {
+func (p *MGetBillArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-type MGetGillRequestResult struct {
+type MGetBillResult struct {
 	Success *account.MGetBillResponse
 }
 
-var MGetGillRequestResult_Success_DEFAULT *account.MGetBillResponse
+var MGetBillResult_Success_DEFAULT *account.MGetBillResponse
 
-func (p *MGetGillRequestResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *MGetBillResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
 		p.Success = new(account.MGetBillResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
 
-func (p *MGetGillRequestResult) FastWrite(buf []byte) (n int) {
+func (p *MGetBillResult) FastWrite(buf []byte) (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.FastWrite(buf)
 }
 
-func (p *MGetGillRequestResult) Size() (n int) {
+func (p *MGetBillResult) Size() (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.Size()
 }
 
-func (p *MGetGillRequestResult) Marshal(out []byte) ([]byte, error) {
+func (p *MGetBillResult) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetSuccess() {
-		return out, fmt.Errorf("No req in MGetGillRequestResult")
+		return out, fmt.Errorf("No req in MGetBillResult")
 	}
 	return proto.Marshal(p.Success)
 }
 
-func (p *MGetGillRequestResult) Unmarshal(in []byte) error {
+func (p *MGetBillResult) Unmarshal(in []byte) error {
 	msg := new(account.MGetBillResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
@@ -1337,18 +1337,18 @@ func (p *MGetGillRequestResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *MGetGillRequestResult) GetSuccess() *account.MGetBillResponse {
+func (p *MGetBillResult) GetSuccess() *account.MGetBillResponse {
 	if !p.IsSetSuccess() {
-		return MGetGillRequestResult_Success_DEFAULT
+		return MGetBillResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-func (p *MGetGillRequestResult) SetSuccess(x interface{}) {
+func (p *MGetBillResult) SetSuccess(x interface{}) {
 	p.Success = x.(*account.MGetBillResponse)
 }
 
-func (p *MGetGillRequestResult) IsSetSuccess() bool {
+func (p *MGetBillResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
@@ -1587,11 +1587,11 @@ func (p *kClient) UpdateBill(ctx context.Context, Req *account.UpdateBillRequest
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) MGetGillRequest(ctx context.Context, Req *account.MGetBillRequest) (r *account.MGetBillResponse, err error) {
-	var _args MGetGillRequestArgs
+func (p *kClient) MGetBill(ctx context.Context, Req *account.MGetBillRequest) (r *account.MGetBillResponse, err error) {
+	var _args MGetBillArgs
 	_args.Req = Req
-	var _result MGetGillRequestResult
-	if err = p.c.Call(ctx, "MGetGillRequest", &_args, &_result); err != nil {
+	var _result MGetBillResult
+	if err = p.c.Call(ctx, "MGetBill", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

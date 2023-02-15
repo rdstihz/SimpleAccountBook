@@ -43,7 +43,7 @@ func (x *BaseResp) fastReadField1(buf []byte, _type int8) (offset int, err error
 }
 
 func (x *BaseResp) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.StatusMsg, offset, err = fastpb.ReadInt64(buf, _type)
+	x.StatusMsg, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -324,10 +324,10 @@ func (x *BaseResp) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *BaseResp) fastWriteField2(buf []byte) (offset int) {
-	if x.StatusMsg == 0 {
+	if x.StatusMsg == "" {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.StatusMsg)
+	offset += fastpb.WriteString(buf[offset:], 2, x.StatusMsg)
 	return offset
 }
 
@@ -513,10 +513,10 @@ func (x *BaseResp) sizeField1() (n int) {
 }
 
 func (x *BaseResp) sizeField2() (n int) {
-	if x.StatusMsg == 0 {
+	if x.StatusMsg == "" {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.StatusMsg)
+	n += fastpb.SizeString(2, x.StatusMsg)
 	return n
 }
 
