@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/rdstihz/SimpleAccountBook/pkg/constants"
 	"gorm.io/gorm"
+	"log"
 )
 
 type Account struct {
@@ -26,7 +27,7 @@ func DeleteAccount(ctx context.Context, accountID int64) error {
 }
 
 func UpdateAccount(ctx context.Context, accountID int64, account *Account) error {
-	return DB.Model(&Account{Model: gorm.Model{ID: uint(accountID)}}).Updates(account).Error
+	return DB.WithContext(ctx).Model(&Account{Model: gorm.Model{ID: uint(accountID)}}).Updates(account).Error
 }
 
 func MGetAccount(ctx context.Context, accountIDs []int64) ([]*Account, error) {
@@ -48,4 +49,14 @@ func GetAccountByUserID(ctx context.Context, userID int64) ([]*Account, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func ChangeBalance(ctx context.Context, accountID int64, delta float64) error {
+	var account Account
+	if err := DB.WithContext(ctx).Where("id = ?", accountID).First(&account).Error; err != nil {
+		return err
+	}
+	account.Balance += delta
+	log.Println("delta", delta)
+	return DB.Save(&account).Error
 }

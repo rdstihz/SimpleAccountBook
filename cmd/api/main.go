@@ -141,6 +141,6 @@ func main() {
 	//查询bill
 	bill.GET(":bill_id/", handler.GetBillInfoHandler)
 	//查询account下所有bill
-	bill.GET("list/", handler.ListBillHandler)
+	bill.GET("list/:account_id/", handler.ListBillHandler)
 	h.Spin()
 }

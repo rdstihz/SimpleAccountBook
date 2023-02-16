@@ -48,3 +48,8 @@ func GetAccountByUserID(ctx context.Context, userID int64) ([]*account.Account, 
 	}
 	return pack.Accounts(models), nil
 }
+
+// ChangeBalance 修改帐户余额
+func ChangeBalance(ctx context.Context, accountID int64, delta float64) error {
+	return db.ChangeBalance(ctx, accountID, delta)
+}

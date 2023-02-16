@@ -23,6 +23,26 @@ func Accounts(model []*db.Account) []*account.Account {
 	return res
 }
 
+func Bill(model *db.Bill) *account.Bill {
+	return &account.Bill{
+		BillId:    int64(model.Model.ID),
+		UserId:    model.UserId,
+		AccountId: model.AccountId,
+		Type:      model.Type,
+		Amount:    model.Amount,
+		Category:  model.Category,
+		Comment:   model.Comment,
+	}
+}
+
+func Bills(model []*db.Bill) []*account.Bill {
+	res := make([]*account.Bill, 0, len(model))
+	for _, item := range model {
+		res = append(res, Bill(item))
+	}
+	return res
+}
+
 func BuildBaseResp(err error) *account.BaseResp {
 	if err == nil {
 		return baseResp(errno.Success)

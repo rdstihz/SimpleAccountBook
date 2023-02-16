@@ -12,10 +12,12 @@ import (
 )
 
 type BillParam struct {
-	Type     int64   `json:"type"`
-	Amount   float64 `json:"amount"`
-	Category string  `json:"category"`
-	Comment  string  `json:"comment"`
+	UserID    int64   `json:"user_id"`
+	AccountID int64   `json:"account_id"`
+	Type      int64   `json:"type"`
+	Amount    float64 `json:"amount"`
+	Category  string  `json:"category"`
+	Comment   string  `json:"comment"`
 }
 
 func CreateBillHandler(ctx context.Context, c *app.RequestContext) {
@@ -83,11 +85,13 @@ func UpdateBillHandler(ctx context.Context, c *app.RequestContext) {
 	}
 	//调用rpc修改帐单
 	err = rpc.UpdateBill(&account.UpdateBillRequest{Bill: &account.Bill{
-		BillId:   billID,
-		Type:     billValues.Type,
-		Amount:   billValues.Amount,
-		Category: billValues.Category,
-		Comment:  billValues.Comment,
+		BillId:    billID,
+		UserId:    billValues.UserID,
+		AccountId: billValues.AccountID,
+		Type:      billValues.Type,
+		Amount:    billValues.Amount,
+		Category:  billValues.Category,
+		Comment:   billValues.Comment,
 	}})
 	if err != nil {
 		SendResponse(c, err, nil)
